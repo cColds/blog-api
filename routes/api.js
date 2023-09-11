@@ -1,10 +1,12 @@
 const express = require("express");
+const Post = require("../models/Post");
 
 const router = express.Router();
 
-/* GET home page. */
-router.get("/", (req, res) => {
-    res.send("hi");
+router.get("/blogs", async (req, res) => {
+    const blogs = await Post.find();
+
+    res.json(blogs);
 });
 
 module.exports = router;
