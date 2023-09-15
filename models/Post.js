@@ -6,6 +6,10 @@ const postSchema = new Schema({
     body: { type: String, required: true },
     date: { type: Date, default: Date.now() },
     published: { type: Boolean, required: true },
+    img: {
+        data: Buffer,
+        contentType: String,
+    },
 });
 
 const Post = model("Post", postSchema);
