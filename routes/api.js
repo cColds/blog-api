@@ -1,7 +1,11 @@
 const express = require("express");
 const multer = require("multer");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { body, check, validationResult } = require("express-validator");
 const Post = require("../models/Post");
+const User = require("../models/User");
+const verifyToken = require("../middlewares/verifyToken");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -9,6 +13,40 @@ const upload = multer({
 });
 
 const router = express.Router();
+
+router.get("/", verifyToken, (req, res) => {
+    res.json(req.authData);
+});
+
+router.post("/login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            throw new Error("Incorrect username");
+        }
+
+        const match = bcrypt.compare(password, user.password);
+
+        if (!match) {
+            throw new Error("Incorrect password");
+        }
+
+        jwt.sign(
+            { user },
+            process.env.JWT_KEY,
+            { expiresIn: "15m" },
+            (err, token) => {
+                res.json({
+                    token,
+                });
+            }
+        );
+    } catch (e) {
+        res.json({ error: e.message });
+    }
+});
 
 router.get("/blogs", async (req, res) => {
     const blogs = await Post.find();
@@ -18,6 +56,7 @@ router.get("/blogs", async (req, res) => {
 
 router.post(
     "/blogs",
+    verifyToken,
     upload.single("image"),
     body("title").trim().notEmpty().withMessage("Title cannot be empty"),
     body("author").trim().notEmpty().withMessage("Author cannot be empty"),
