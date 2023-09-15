@@ -107,4 +107,10 @@ router.post(
     }
 );
 
+router.get("/blogs/:blogId", async (req, res) => {
+    const blog = await Post.findById(req.params.blogId);
+
+    res.json(blog);
+});
+
 module.exports = router;
