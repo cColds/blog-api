@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { body, check, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const verifyToken = require("../middlewares/verifyToken");
+const validateBlog = require("../middlewares/validateBlog");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -59,28 +60,7 @@ router.post(
     "/blogs",
     verifyToken,
     upload.single("image"),
-    body("title").trim().notEmpty().withMessage("Title cannot be empty"),
-    body("author").trim().notEmpty().withMessage("Author cannot be empty"),
-    body("body").trim().notEmpty().withMessage("Body cannot be empty"),
-    check("image").custom((value, { req }) => {
-        const validImageExts = [
-            "image/webp",
-            "image/png",
-            "image/jpeg",
-            "image/avif",
-        ];
-
-        if (req.file && !validImageExts.includes(req.file.mimetype)) {
-            throw new Error(
-                "File extension must be .webp, .png, .jpg/jpeg, or .avif"
-            );
-        }
-
-        return true;
-    }),
-    body("published")
-        .isIn(["true", "false"])
-        .withMessage("Published must be true/false"),
+    validateBlog,
     async (req, res) => {
         const result = validationResult(req);
         if (!result.isEmpty()) {
@@ -116,31 +96,16 @@ router.get("/blogs/:blogId", async (req, res) => {
 
 router.post(
     "/blogs/:blogId",
+    verifyToken,
     upload.single("image"),
-    body("title").trim().notEmpty().withMessage("Title cannot be empty"),
-    body("author").trim().notEmpty().withMessage("Author cannot be empty"),
-    body("body").trim().notEmpty().withMessage("Body cannot be empty"),
-    check("image").custom((value, { req }) => {
-        const validImageExts = [
-            "image/webp",
-            "image/png",
-            "image/jpeg",
-            "image/avif",
-        ];
-
-        if (req.file && !validImageExts.includes(req.file.mimetype)) {
-            throw new Error(
-                "File extension must be .webp, .png, .jpg/jpeg, or .avif"
-            );
+    validateBlog,
+    async (req, res) => {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            res.json(result.errors);
+            return;
         }
 
-        return true;
-    }),
-    body("published")
-        .isIn(["true", "false"])
-        .withMessage("Published must be true/false"),
-    verifyToken,
-    async (req, res) => {
         try {
             const img = req.file
                 ? {
