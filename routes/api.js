@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -51,7 +50,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/blogs", async (req, res) => {
-    const blogs = await Post.find();
+    const blogs = await Post.find().populate("author");
 
     res.json(blogs);
 });
@@ -89,8 +88,7 @@ router.post(
 );
 
 router.get("/blogs/:blogId", async (req, res) => {
-    const blog = await Post.findById(req.params.blogId);
-
+    const blog = await Post.findById(req.params.blogId).populate("author");
     res.json(blog);
 });
 
@@ -115,7 +113,7 @@ router.post(
                 : undefined;
 
             const updatedBlog = {
-                _id: new mongoose.Types.ObjectId(req.params.blogId),
+                _id: req.params.blogId,
                 title: req.body.title,
                 author: req.body.author,
                 img,

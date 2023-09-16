@@ -5,7 +5,6 @@ const commentSchema = new Schema({
     email: { type: String, required: true },
     message: { type: String, required: true },
     date: { type: Date, default: Date.now() },
-    postId: { type: Schema.Types.ObjectId, ref: "Post" },
 });
 
 const Comment = model("Comment", commentSchema);
