@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const Comment = require("../models/Comment");
 const verifyToken = require("../middlewares/verifyToken");
 const validateBlog = require("../middlewares/validateBlog");
+const validateComment = require("../middlewares/validateComment");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -85,6 +87,29 @@ router.post(
 
 router.get("/blogs/:blogId", async (req, res) => {
     const blog = await Post.findById(req.params.blogId).populate("author");
+    res.json(blog);
+});
+
+router.post("/blogs/:blogId/comment", validateComment, async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.json(result.errors);
+        return;
+    }
+
+    const comment = new Comment({
+        name: req.body.name,
+        email: req.body.email,
+        message: req.body.message,
+    });
+    await comment.save();
+
+    const blog = await Post.findById(req.params.blogId);
+
+    blog.comments.push(comment);
+
+    await blog.save();
+
     res.json(blog);
 });
 
