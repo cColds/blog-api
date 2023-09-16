@@ -38,11 +38,7 @@ router.post("/login", async (req, res) => {
             { user },
             process.env.JWT_KEY,
             { expiresIn: "15m" },
-            (err, token) => {
-                res.json({
-                    token,
-                });
-            }
+            (err, token) => res.json({ token })
         );
     } catch (e) {
         res.json({ error: e.message });
