@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/blogs", async (req, res) => {
-    const blogs = await Post.find().populate("author");
+    const blogs = await Post.find().populate("author", "username");
 
     res.json(blogs);
 });
