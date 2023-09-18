@@ -39,7 +39,7 @@ router.post("/login", async (req, res) => {
         jwt.sign(
             { user },
             process.env.JWT_KEY,
-            { expiresIn: "15m" },
+            { expiresIn: "30m" },
             (err, token) => res.json({ token })
         );
     } catch (e) {
