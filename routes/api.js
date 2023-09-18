@@ -49,7 +49,6 @@ router.post("/login", async (req, res) => {
 
 router.get("/blogs", async (req, res) => {
     const blogs = await Post.find().populate("author", "username");
-
     res.json(blogs);
 });
 
@@ -67,10 +66,11 @@ router.post(
 
         const img = req.file
             ? {
-                  data: Buffer.from(req.file.buffer).toString("base64"),
+                  data: req.file.buffer,
                   contentType: req.file.mimetype,
               }
             : undefined;
+
         const blog = new Post({
             title: req.body.title,
             author: req.body.author,
@@ -128,7 +128,7 @@ router.post(
         try {
             const img = req.file
                 ? {
-                      data: Buffer.from(req.file.buffer).toString("base64"),
+                      data: req.file.buffer,
                       contentType: req.file.mimetype,
                   }
                 : undefined;
