@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const format = require("date-fns/format");
 const intervalToDuration = require("date-fns/intervalToDuration");
-const formatDistanceToNow = require("date-fns/formatDistanceToNow");
+const formatDistanceToNowStrict = require("date-fns/formatDistanceToNowStrict");
 
 const postSchema = new Schema(
     {
@@ -29,8 +29,11 @@ postSchema.virtual("formatDate").get(function formatDate() {
     });
 
     if (!dateDiff.months) {
-        const dateDistanceInWords = formatDistanceToNow(new Date(this.date));
-        return `${dateDistanceInWords} ago`;
+        const dateDistanceInWords = formatDistanceToNowStrict(
+            new Date(this.date),
+            { addSuffix: true }
+        );
+        return dateDistanceInWords;
     }
 
     const formattedDate = format(new Date(this.date), "MMM d, y");
