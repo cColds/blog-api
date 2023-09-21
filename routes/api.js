@@ -86,7 +86,9 @@ router.post(
 );
 
 router.get("/blogs/:blogId", async (req, res) => {
-    const blog = await Post.findById(req.params.blogId).populate("author");
+    const blog = await Post.findById(req.params.blogId)
+        .populate("author")
+        .populate("comments");
     res.json(blog);
 });
 
