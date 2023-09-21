@@ -22,7 +22,7 @@ postSchema.virtual("imgUrl").get(function getImgUrl() {
 });
 
 postSchema.virtual("formatDate").get(function formatPostDate() {
-    formatDate(this.date);
+    return formatDate(this.date);
 });
 
 postSchema.virtual("formatDateTitle").get(formatDateTitle);

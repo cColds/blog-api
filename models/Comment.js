@@ -14,7 +14,7 @@ const commentSchema = new Schema(
 );
 
 commentSchema.virtual("formatDate").get(function formatCommentDate() {
-    formatDate(this.date);
+    return formatDate(this.date);
 });
 commentSchema.virtual("formatDateTitle").get(formatDateTitle);
 
