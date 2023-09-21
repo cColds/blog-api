@@ -1,7 +1,6 @@
 const { Schema, model } = require("mongoose");
-const format = require("date-fns/format");
-const intervalToDuration = require("date-fns/intervalToDuration");
-const formatDistanceToNowStrict = require("date-fns/formatDistanceToNowStrict");
+const formatDate = require("../utils/formatDate");
+const formatDateTitle = require("../utils/formatDateTitle");
 
 const postSchema = new Schema(
     {
@@ -22,32 +21,11 @@ postSchema.virtual("imgUrl").get(function getImgUrl() {
     return `data:${this.img.contentType};base64,${base64}`;
 });
 
-postSchema.virtual("formatDate").get(function formatDate() {
-    const dateDiff = intervalToDuration({
-        start: new Date(this.date),
-        end: new Date(),
-    });
-
-    if (!dateDiff.months) {
-        const dateDistanceInWords = formatDistanceToNowStrict(
-            new Date(this.date),
-            { addSuffix: true }
-        );
-        return dateDistanceInWords;
-    }
-
-    const formattedDate = format(new Date(this.date), "MMM d, y");
-    return formattedDate;
+postSchema.virtual("formatDate").get(function formatPostDate() {
+    formatDate(this.date);
 });
 
-postSchema.virtual("formatDateTitle").get(function formatDateTitle() {
-    const formattedDateTitle = format(
-        new Date(this.date),
-        "EEEE, MMMM d, y 'at' hh:mm:ss a"
-    );
-
-    return formattedDateTitle;
-});
+postSchema.virtual("formatDateTitle").get(formatDateTitle);
 
 const Post = model("Post", postSchema);
 
