@@ -7,6 +7,7 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 const Comment = require("../models/Comment");
 const verifyToken = require("../middlewares/verifyToken");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 const validateBlog = require("../middlewares/validateBlog");
 const validateComment = require("../middlewares/validateComment");
 
@@ -19,6 +20,10 @@ const router = express.Router();
 
 router.get("/", verifyToken, (req, res) => {
     res.json(req.authData);
+});
+
+router.get("/login", isLoggedIn, (req, res) => {
+    res.json(req.isLoggedIn);
 });
 
 router.post("/login", async (req, res) => {
