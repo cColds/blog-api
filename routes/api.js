@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
             throw new Error("Incorrect username");
         }
 
-        const match = bcrypt.compare(password, user.password);
+        const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             throw new Error("Incorrect password");
@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
             (err, token) => res.json({ token })
         );
     } catch (e) {
-        res.json({ error: e.message });
+        res.status(401).json({ error: e.message });
     }
 });
 
@@ -96,7 +96,7 @@ router.get("/blogs/:blogId", async (req, res) => {
 router.post("/blogs/:blogId/comment", validateComment, async (req, res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        res.json(result.errors);
+        res.status(400).json(result.errors);
         return;
     }
 
