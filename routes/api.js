@@ -18,8 +18,13 @@ const upload = multer({
 
 const router = express.Router();
 
-router.get("/", verifyToken, (req, res) => {
-    res.json(req.authData);
+router.get("/user", verifyToken, async (req, res) => {
+    const user = await User.findOne(
+        { username: req.query.username },
+        "username"
+    );
+
+    res.json(user);
 });
 
 router.get("/login", isLoggedIn, (req, res) => {
