@@ -103,6 +103,13 @@ router.get("/blogs/:blogId", async (req, res) => {
     res.json(blog);
 });
 
+router.delete("/blogs/:blogId", async (req, res) => {
+    const deletedBlog = await Post.findByIdAndDelete(req.params.blogId);
+    await Comment.deleteMany({ _id: { $in: deletedBlog.comments } });
+
+    res.send(`Deleted ${deletedBlog.title}`);
+});
+
 router.post("/blogs/:blogId/comment", validateComment, async (req, res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
