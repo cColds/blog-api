@@ -2,7 +2,6 @@ const { body, check } = require("express-validator");
 
 const validateBlog = [
     body("title").trim().notEmpty().withMessage("Title cannot be empty"),
-    body("author").trim().notEmpty().withMessage("Author cannot be empty"),
     body("body").trim().notEmpty().withMessage("Body cannot be empty"),
     check("image").custom((value, { req }) => {
         const validImageExts = [

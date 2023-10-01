@@ -67,31 +67,36 @@ router.post(
     verifyToken,
     upload.single("image"),
     validateBlog,
-    async (req, res) => {
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            res.json(result.errors);
-            return;
+    async (req, res, next) => {
+        try {
+            const result = validationResult(req);
+            if (!result.isEmpty()) {
+                res.json(result.errors);
+                return;
+            }
+
+            const img = req.file
+                ? {
+                      data: req.file.buffer,
+                      contentType: req.file.mimetype,
+                  }
+                : undefined;
+
+            const blog = new Post({
+                title: req.body.title,
+                author: req.authData.user._id,
+                body: req.body.body,
+                published: JSON.parse(req.body.published),
+                img,
+            });
+
+            await blog.save();
+
+            res.json(blog);
+        } catch (e) {
+            console.error(e.message);
+            next(e.message);
         }
-
-        const img = req.file
-            ? {
-                  data: req.file.buffer,
-                  contentType: req.file.mimetype,
-              }
-            : undefined;
-
-        const blog = new Post({
-            title: req.body.title,
-            author: req.body.author,
-            body: req.body.body,
-            published: JSON.parse(req.body.published),
-            img,
-        });
-
-        await blog.save();
-
-        res.json(blog);
     }
 );
 
@@ -133,7 +138,7 @@ router.post("/blogs/:blogId/comment", validateComment, async (req, res) => {
     res.json(blog);
 });
 
-router.post(
+router.put(
     "/blogs/:blogId",
     verifyToken,
     upload.single("image"),
@@ -156,7 +161,7 @@ router.post(
             const updatedBlog = {
                 _id: req.params.blogId,
                 title: req.body.title,
-                author: req.body.author,
+                author: req.authData.user._id,
                 img,
             };
 
