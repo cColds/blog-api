@@ -162,6 +162,8 @@ router.put(
                 _id: req.params.blogId,
                 title: req.body.title,
                 author: req.authData.user._id,
+                body: req.body.body,
+                published: req.body.published,
                 img,
             };
 
