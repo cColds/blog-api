@@ -4,6 +4,8 @@ const validateBlog = [
     body("title").trim().notEmpty().withMessage("Title cannot be empty"),
     body("body").trim().notEmpty().withMessage("Body cannot be empty"),
     check("image").custom((value, { req }) => {
+        if (!req.file) throw new Error("Image is required");
+
         const validImageExts = [
             "image/webp",
             "image/png",

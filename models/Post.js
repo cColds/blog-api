@@ -9,7 +9,10 @@ const postSchema = new Schema(
         body: { type: String, required: true },
         date: { type: Date, default: Date.now() },
         published: { type: Boolean, required: true },
-        img: { data: Buffer, contentType: String },
+        img: {
+            data: { type: Buffer, required: true },
+            contentType: { type: String, required: true },
+        },
         comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     },
     { toJSON: { virtuals: true } }

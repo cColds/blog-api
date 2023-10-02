@@ -75,12 +75,10 @@ router.post(
                 return;
             }
 
-            const img = req.file
-                ? {
-                      data: req.file.buffer,
-                      contentType: req.file.mimetype,
-                  }
-                : undefined;
+            const img = {
+                data: req.file.buffer,
+                contentType: req.file.mimetype,
+            };
 
             const blog = new Post({
                 title: req.body.title,
@@ -151,12 +149,10 @@ router.put(
         }
 
         try {
-            const img = req.file
-                ? {
-                      data: req.file.buffer,
-                      contentType: req.file.mimetype,
-                  }
-                : undefined;
+            const img = {
+                data: req.file.buffer,
+                contentType: req.file.mimetype,
+            };
 
             const updatedBlog = {
                 _id: req.params.blogId,
