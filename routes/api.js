@@ -154,13 +154,15 @@ router.put(
                 contentType: req.file.mimetype,
             };
 
+            const { title, body, published } = req.body;
+
             const updatedBlog = {
                 _id: req.params.blogId,
-                title: req.body.title,
-                author: req.authData.user._id,
-                body: req.body.body,
-                published: req.body.published,
+                title,
+                body,
+                published: JSON.parse(published),
                 img,
+                author: req.authData.user._id,
             };
 
             if (req.file) {
