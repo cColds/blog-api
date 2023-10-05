@@ -71,7 +71,7 @@ router.post(
         try {
             const result = validationResult(req);
             if (!result.isEmpty()) {
-                res.json(result.errors);
+                res.status(422).json(result.errors);
                 return;
             }
 
@@ -144,7 +144,7 @@ router.put(
     async (req, res) => {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            res.json(result.errors);
+            res.status(422).json(result.errors);
             return;
         }
 
