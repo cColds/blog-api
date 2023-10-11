@@ -82,6 +82,7 @@ router.post(
 
             const blog = new Post({
                 title: req.body.title,
+                description: req.body.description,
                 author: req.authData.user._id,
                 body: req.body.body,
                 published: JSON.parse(req.body.published),
@@ -154,11 +155,12 @@ router.put(
                 contentType: req.file.mimetype,
             };
 
-            const { title, body, published } = req.body;
+            const { title, description, body, published } = req.body;
 
             const updatedBlog = {
                 _id: req.params.blogId,
                 title,
+                description,
                 body,
                 published: JSON.parse(published),
                 img,
