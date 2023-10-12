@@ -3,6 +3,7 @@ const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const Comment = require("../models/Comment");
@@ -181,6 +182,31 @@ router.put(
         } catch (e) {
             console.error(e);
             res.sendStatus(404);
+        }
+    }
+);
+
+router.delete(
+    "/blogs/:blogId/comments/:commentId",
+    verifyToken,
+    async (req, res) => {
+        try {
+            const { commentId, blogId } = req.params;
+
+            const commentObjectId = new mongoose.Types.ObjectId(commentId);
+
+            const updatedPostComment = await Post.findByIdAndUpdate(
+                blogId,
+                { $pull: { comments: commentObjectId } },
+                { new: true }
+            );
+
+            await Comment.findByIdAndDelete(commentId);
+
+            res.json(updatedPostComment);
+        } catch (err) {
+            console.error(err);
+            res.status(403).json(err);
         }
     }
 );
