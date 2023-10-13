@@ -63,6 +63,15 @@ router.get("/blogs", async (req, res) => {
     res.json(blogs);
 });
 
+router.get("/blogs/published", async (req, res) => {
+    const publishedBlogs = await Post.find({ published: true }).populate(
+        "author",
+        "username"
+    );
+
+    res.json(publishedBlogs);
+});
+
 router.post(
     "/blogs",
     verifyToken,
@@ -106,6 +115,17 @@ router.get("/blogs/:blogId", async (req, res) => {
         .populate({ path: "comments", options: { sort: { date: -1 } } });
 
     res.json(blog);
+});
+
+router.get("/blogs/:blogId/comments/:commentId", async (req, res, next) => {
+    try {
+        const comment = await Comment.findById(req.params.commentId);
+
+        res.json(comment);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 });
 
 router.delete("/blogs/:blogId", verifyToken, async (req, res) => {
