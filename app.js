@@ -9,15 +9,7 @@ const apiRouter = require("./routes/api");
 
 const app = express();
 
-async function connectMongoDB() {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-    } catch (error) {
-        console.error("Failed to connect to MongoDB", error);
-    }
-}
-
-connectMongoDB();
+mongoose.connect(process.env.MONGODB_URI).catch((err) => console.error(err));
 
 app.use(logger("dev"));
 app.use(express.json());
