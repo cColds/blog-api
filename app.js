@@ -13,7 +13,7 @@ async function connectMongoDB() {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
     } catch (error) {
-        console.error("Failed to connect to MongoDB");
+        console.error("Failed to connect to MongoDB", error);
     }
 }
 
